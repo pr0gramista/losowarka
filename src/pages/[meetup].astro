@@ -1,0 +1,86 @@
+---
+import Logo from '../components/Logo.astro';
+import Layout from '../layouts/Layout.astro';
+import { run } from '../randomizer';
+
+const eventNumber = Astro.params.meetup;
+const now = new Date().toISOString();
+
+type Winner = {
+	name: string;
+	photoURL: string;
+	profileURL: string;
+}
+
+let winners : any = [];
+let error;
+try {
+	winners = await run('wroclawjug', eventNumber, 1);
+} catch (e) {
+	error = e;
+}
+const winner : Winner = winners[0] as Winner;
+
+---
+<Layout title="Losowarka">
+	{!error &&
+	<main>
+		<div class="flex">
+			<Logo />
+			<h1>Zwycięzcą jest:</h1>
+		</div>
+		<div class="flex mt">
+			<img src={winner.photoURL} id="winnerPicture" alt="Profile image" />
+			<div id="winnerName">{winner.name}</div>
+		</div>
+		<div class="flex mt">
+			Dziękujemy wszystkim za udział i zapraszamy na następne spotkania!
+		</div>
+	</main>}
+	{error && <div>{error.toString()}</div>}
+	<div id="note">Generated at {now} for event number {eventNumber}.</div>
+</Layout>
+
+<style>
+	#winnerPicture {
+		max-width: 200px;
+		max-height: 200px;
+		width: 200px;
+		height: 200px;
+		object-fit: contain;
+	}
+
+	.mt {
+		margin-top: 30px;
+	}
+
+	.flex {
+		display: flex;
+		align-items: center;
+	}
+
+	#note {
+		position: absolute;
+		left: 10px;
+		bottom: 10px;
+		font-size: 0.8rem;
+		color: #666;
+	}
+
+	#winnerName {
+		margin: 20px;
+		font-weight: bold;
+		font-size: 3rem;
+		background-image: var(--accent-gradient);
+		-webkit-background-clip: text;
+		-webkit-text-fill-color: transparent;
+		background-size: 400%;
+		background-position: 0%;
+	}
+
+	main {
+		margin: auto;
+		padding: 1.5rem;
+		max-width: 60ch;
+	}
+</style>
