@@ -1,4 +1,6 @@
-# Randomizer
+# Losowarka
+Wrocław JUG 🇵🇱 randomizer to give out some cool gifts
+
 Using [Astro](https://astro.build/) and SSR.
 Randomizer taken from [durancristhian/meetup-randomizer](https://github.com/durancristhian/meetup-randomizer).
 
