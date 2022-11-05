@@ -4,30 +4,18 @@
  * Original repository:
  * https://github.com/durancristhian/meetup-randomizer
  */
-import * as https from "https";
 import { knuthShuffle } from "knuth-shuffle";
 
 function getEventData(apiUrl, meetupName, eventId) {
   return new Promise((resolve, reject) => {
-    let body = "";
     const url = apiUrl
       .replace("{{meetupName}}", meetupName)
       .replace("{{eventId}}", eventId);
 
-    https
-      .get(url, (response) => {
-        response.on("data", (chunk) => {
-          body += chunk;
-        });
-
-        response.on("end", () => {
-          const parsedJSON = JSON.parse(body);
-          resolve(parsedJSON);
-        });
-      })
-      .on("error", (error) => {
-        reject(error);
-      });
+    fetch(url)
+      .then((response) => response.json())
+      .then((data) => resolve(data))
+      .catch((error) => reject(error));
   });
 }
 
